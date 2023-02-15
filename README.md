@@ -25,3 +25,9 @@ Save the code above as **RealTimeLooseHold.m** and put it to the path where your
 ```
 'C:\Users\DELL\AppData\Roaming\MathWorks\MATLAB Add-Ons\Apps\NIMHMonkeyLogic22\ext\RealTimeLooseHold.m'
 ```
+
+### Image vault setting
+in the user loop file, we declear the img which we would present during the experiment, you should select the mat file which contain 'img_info' field which tells image name, saving path, image category(we will use this during online analysis...)
+```
+imginfo_valut='G:\Img_vault\matfile_pool';
+```

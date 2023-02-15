@@ -15,7 +15,7 @@ function [selected_dataset, img_path,default_params] = select_dataset(root_dir)
 ending_flag = 1;
 while(ending_flag)
      [filename, ~, ~] = uigetfile(root_dir);
-
+    %% change this tomorrow to avoid endless loop once we have no proper matfile(mostly when we change the computer)
      % try to load mat file
      try
         temp = load([root_dir '\' filename]).image_info;
