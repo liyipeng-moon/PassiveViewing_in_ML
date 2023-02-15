@@ -9,6 +9,7 @@ if isempty(timing_filename_returned)
 end
 
 %% parameters which should not change if we fix it
+% the mat file in the vault should contain absolute path & category... 
 imginfo_valut='G:\Img_vault\matfile_pool';
 TrialRecord.User.image_train = 1000;
 switch_token=0;

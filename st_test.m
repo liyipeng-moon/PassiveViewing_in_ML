@@ -33,13 +33,13 @@ img = ImageChanger(null_);
         imglist(idx,1)={ID(img_trial_idx)};
         imglist(idx,2)={[0,0]};
         imglist(idx,3)={onset_time};
-        imglist(idx,4)={img_trial_idx+10000};
+        imglist(idx,4)={TrialRecord.User.Trial_Loader(img_trial_idx)+10000};
         % set blank
         idx=2*img_trial_idx;
         imglist(idx,1)={[]};
         imglist(idx,2)={[]};
         imglist(idx,3)={offset_time};
-        imglist(idx,4)={img_trial_idx+20000};
+        imglist(idx,4)={TrialRecord.User.Trial_Loader(img_trial_idx)+20000};
     end
     img.List=imglist;
     img.DurationUnit='mesc';
