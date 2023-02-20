@@ -1,4 +1,4 @@
-function [ev_val, ev_time] = sort_seg_port(datarr, datacapture)
+function [ev_val, ev_time] = fN_sort_seg_port(datarr, datacapture)
 
 reshaped_datarr = reshape(datarr(1:datacapture),[datarr(1),datacapture/double(datarr(1))]);
 

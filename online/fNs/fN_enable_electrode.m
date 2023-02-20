@@ -4,5 +4,5 @@ function [BAM_config,BAM_data, app] = fN_enable_electrode(BAM_config, BAM_data, 
             BAM_config.num_unit_used = BAM_config.num_unit_used +1;
             BAM_config.Electrode(electrode,channel).UID=BAM_config.num_unit_used;
             temp.Value = BAM_config.Electrode(electrode,channel).UID;
-            setfield(app,spinner_filed,temp)
+            setfield(app,spinner_filed,temp);
 end

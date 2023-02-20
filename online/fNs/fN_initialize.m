@@ -24,6 +24,7 @@ function [BAM_config, BAM_data, app] = fn_initialize(app)
 
     %% set electrode
     [BAM_config BAM_data, app] = fN_assign_electrode(BAM_config, BAM_data, app);
+
     % set slectrode refresh step
 %     for electrode = 1:BAM_config.MaxElectrode
 %         for channel = 1:BAM_config.MaxUnit
@@ -33,7 +34,10 @@ function [BAM_config, BAM_data, app] = fn_initialize(app)
 %                 setfield(app,spinner_filed,temp)
 %         end
 %     end
-
+    [BAM_config,BAM_data, app] = fN_ao_connect(BAM_config, BAM_data, app);
+    if(~BAM_config.IP.Connected)
+        wrong_txt='Fail to Connect to AO';
+    end
     %%
     if(isempty(wrong_txt))
         % initialize success

@@ -2,7 +2,7 @@ function [BAM_config,BAM_data, app] = fN_refresh_electrode(BAM_config, BAM_data,
 
 %% electrode changing
 for electrode = 1:BAM_config.MaxElectrode
-    electrode_using = 1
+    electrode_using = 1;
     lfp_field = ['ChannelUsingLFP' num2str(electrode)];
     temp = getfield(app,lfp_field);
     BAM_config.ElectrodeUsing(electrode) = temp.Value;

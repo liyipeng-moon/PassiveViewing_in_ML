@@ -1,5 +1,5 @@
-function app = fn_change_gui_color(app)
-global BAM_config GAM_data;
+function app = fN_change_gui_color(app)
+global BAM_config BAM_data;
 
 %% about saving
 if(BAM_config.is_saving)

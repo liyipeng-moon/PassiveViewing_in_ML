@@ -24,5 +24,9 @@ end
 BAM_config.num_unit_used = 0;
 
 
-
+%% AO IP Address
+BAM_config.IP.DSPMAC = 'A8:1B:6A:21:24:4B';
+BAM_config.IP.PCMAC = 'bc:6a:29:e1:49:bf';
+BAM_config.IP.Connected = 0;
+BAM_config.IP.DeviceFreeMode=1;
 save('default_params.mat',"BAM_config","BAM_data");

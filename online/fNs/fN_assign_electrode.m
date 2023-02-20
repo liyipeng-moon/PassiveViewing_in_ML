@@ -6,8 +6,6 @@ for ii = 1:BAM_config.MaxElectrode
         if(BAM_config.Electrode(ii,jj).Using)
             % only functioning when disabled in config 
             [BAM_config,BAM_data, app] = fN_enable_electrode(BAM_config, BAM_data, app,ii,jj);
-        else
-            [BAM_config,BAM_data, app] = fN_disable_electrode(BAM_config, BAM_data, app,ii,jj);
         end
     end
 end
