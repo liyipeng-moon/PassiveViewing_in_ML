@@ -2,16 +2,13 @@ function [BAM_config,BAM_data, app] = fN_assign_electrode(BAM_config, BAM_data, 
 
 
 for ii = 1:BAM_config.MaxElectrode
-
-    app.ChannelSetting.CheckedNodes=[];
     for jj = 1:BAM_config.MaxUnit
-        field_name = ['seg' num2str(ii) num2str(jj) 'Node'];
-        if(BAM_config.Electrode(ii,jj).Using=True)
-            app.ChannelSetting.CheckedNodes = [app.ChannelSetting.CheckedNodes, ]
+        if(BAM_config.Electrode(ii,jj).Using)
+            % only functioning when disabled in config 
+            [BAM_config,BAM_data, app] = fN_enable_electrode(BAM_config, BAM_data, app,ii,jj);
+        else
+            [BAM_config,BAM_data, app] = fN_disable_electrode(BAM_config, BAM_data, app,ii,jj);
         end
-%         if(BAM_config.Electrode(ii,jj).Using=True)
-%         setfield
-%         getfield(app,field_name)
     end
 end
 

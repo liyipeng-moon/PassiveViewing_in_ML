@@ -16,15 +16,13 @@ BAM_config.MaxElectrode = 2;
 BAM_config.MaxUnit = 4;
 for cc = 1:BAM_config.MaxElectrode
     for uu = 1:BAM_config.MaxUnit
-        BAM_config.Electrode(cc,uu).Using = false;
+        BAM_config.Electrode(cc,uu).Using = true;
         BAM_config.Electrode(cc,uu).UID = 0;
     end
+    BAM_config.ElectrodeUsing(cc)=1;
 end
-BAM_config.Electrode(1,1).Using = true;
-BAM_config.Electrode(1,1).UID = 1;
-BAM_config.Electrode(1,2).Using = true;
-BAM_config.Electrode(1,2).UID = 2;
+BAM_config.num_unit_used = 0;
 
-BAM_config.num_electrode = 2;
+
 
 save('default_params.mat',"BAM_config","BAM_data");

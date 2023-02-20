@@ -23,8 +23,18 @@ function [BAM_config, BAM_data, app] = fn_initialize(app)
     end
 
     %% set electrode
-    [BAM_config BAM_data, app] = fN_assign_electrode(BAM_config, BAM_data, app)
-    
+    [BAM_config BAM_data, app] = fN_assign_electrode(BAM_config, BAM_data, app);
+    % set slectrode refresh step
+%     for electrode = 1:BAM_config.MaxElectrode
+%         for channel = 1:BAM_config.MaxUnit
+%                 spinner_filed  = ['Spinners', num2str(electrode), num2str(channel)];
+%                 temp = getfield(app, spinner_filed);
+%                 temp.Step = BAM_config.MaxElectrode*BAM_config.MaxUnit;
+%                 setfield(app,spinner_filed,temp)
+%         end
+%     end
+
+    %%
     if(isempty(wrong_txt))
         % initialize success
         app.SavingLampLabel.Text='Wait to Srart! Lets do some science!' ;
@@ -35,4 +45,5 @@ function [BAM_config, BAM_data, app] = fn_initialize(app)
         app.SavingLamp.Color = BAM_config.colormap.white;
     end
 
+    
 end
