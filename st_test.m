@@ -30,7 +30,7 @@ img = ImageChanger(null_);
     for img_trial_idx = 1:TrialRecord.User.image_train
         % set picture
         idx=2*img_trial_idx-1;
-        imglist(idx,1)={ID(img_trial_idx)};
+        imglist(idx,1)={ID(TrialRecord.User.Trial_Loader(img_trial_idx))};
         imglist(idx,2)={[0,0]};
         imglist(idx,3)={onset_time};
         imglist(idx,4)={TrialRecord.User.Trial_Loader(img_trial_idx)+10000};
@@ -63,20 +63,27 @@ rlh.HoldTime = reward_max_interval;
 rlh.BreakTime = max_break_time;
 
 rwd = RewardScheduler(rlh);
-
 rwd.Schedule =generate_rwd_time(reward_max_interval,reward_min_interval,reward_step,reward_duration);
-
-
-pm = PropertyMonitor(rwd);  % display the state of rwd on the screen
+rwd.Schedule;
+pm = PropertyMonitor(fix1);  % display the state of rwd on the screen
 pm.Dashboard = 1;
+pm2 = PropertyMonitor(rlh);  % display the state of rwd on the screen
+pm2.Dashboard = 2;
+
+bhv_code(1001, 'Fix', 1002, 'Break');
+oom = OnOffMarker(fix1);
+oom.OnMarker = 1001;
+oom.OffMarker = 1002;
 
 con = Concurrent(img);
 con.add(rwd);
 con.add(crc);
 con.add(pm);
+con.add(pm2);
+con.add(oom)
 
 %% Timing System
-dashboard(2, sprintf(['dataset - ' TrialRecord.User.current_set(1:end-4), '(n=' ,num2str(TrialRecord.User.imageset_size), ')']))
+dashboard(6, sprintf(['dataset - ' TrialRecord.User.current_set(1:end-4), '(n=' ,num2str(TrialRecord.User.imageset_size), ')']))
 dashboard(3, sprintf(['has been played for ' num2str(TrialRecord.User.played_times,3), ' cycles before,']))
 dashboard(5, sprintf(['onset = ' num2str(imglist{1,3}), ', offset = ' num2str(imglist{2,3})]))
 counter_num = floor((10*TrialRecord.User.image_train)/(TrialRecord.User.imageset_size));
@@ -96,16 +103,20 @@ crc = CircleGraphic(null_);
 crc.List = { [1 0 0], [1 0 0], fix_dot_size, [0 0] };
 crc.Zorder = 2147483647; % put the fixation dot most front
 tc = TimeCounter(crc);
-tc.Duration = 17;
+tc.Duration = 100;
+
 
 %% create scene
 scene = create_scene(con);
 pre_scene = create_scene(tc);
-
 %% run scene
-run_scene(pre_scene, 100+switch_token*10+electrode_token);
-run_scene(pre_scene, 200+switch_token*10+electrode_token);
-run_scene(pre_scene, 300+switch_token*10+electrode_token);
+for ii = 1:5
+    run_scene(pre_scene, 100+TrialRecord.User.current_idx);
+end
+% run_scene(pre_scene, 200+TrialRecord.User.current_idx);
+% run_scene(pre_scene, 300+TrialRecord.User.current_idx);
+% run_scene(pre_scene, 400+TrialRecord.User.current_idx);
+% run_scene(pre_scene, 500+TrialRecord.User.current_idx);
 run_scene(scene);
 idle(0);
 set_iti(0);

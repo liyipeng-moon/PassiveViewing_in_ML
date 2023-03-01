@@ -9,8 +9,7 @@ if isempty(timing_filename_returned)
 end
 
 %% parameters which should not change if we fix it
-% the mat file in the vault should contain absolute path & category... 
-imginfo_valut='G:\Img_vault\matfile_pool';
+imginfo_valut='C:\Users\user\Desktop\Preload\Img_vault';
 TrialRecord.User.image_train = 1000;
 switch_token=0;
 persistent ID dataset_memory
@@ -19,7 +18,7 @@ persistent ID dataset_memory
 
 if (0==TrialRecord.CurrentTrialNumber) % the first trial
     % select data
-    [TrialRecord.User.current_set, img_path,default_params]=select_dataset(imginfo_valut);
+    [TrialRecord.User.current_set,TrialRecord.User.current_idx, img_path,default_params]=select_dataset(imginfo_valut);
     dataset_memory=TrialRecord.Editable.switch_token;
     ID = [];
     for m=1:length(img_path)
@@ -27,6 +26,7 @@ if (0==TrialRecord.CurrentTrialNumber) % the first trial
         temp_img = mglimresize(temp_img,[default_params.img_size,default_params.img_size]);
         ID(m) = mgladdbitmap(temp_img);  % mgladdbitmap returns an MGL object ID that is a double scalar.
     end
+
     mglsetproperty(ID,'active',false);  % Turn off all images.
 
     % set parameteres about the progress
@@ -43,7 +43,7 @@ if (0==TrialRecord.CurrentTrialNumber) % the first trial
 else % if this is not the first trial
     if(TrialRecord.Editable.switch_token~=dataset_memory) % if we want to change dataset
         dataset_memory = TrialRecord.Editable.switch_token;
-        [TrialRecord.User.current_set, img_path,default_params]=select_dataset(imginfo_valut);
+        [TrialRecord.User.current_set,TrialRecord.User.current_idx, img_path,default_params]=select_dataset(imginfo_valut);
         dataset_memory=TrialRecord.Editable.switch_token;
         ID = [];
         for m=1:length(img_path)

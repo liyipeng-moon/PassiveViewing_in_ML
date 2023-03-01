@@ -1,4 +1,4 @@
-function [selected_dataset, img_path,default_params] = select_dataset(root_dir)
+function [selected_dataset, dataset_idx, img_path,default_params] = select_dataset(root_dir)
 
 % xx = dir([root_dir, '\*.mat']);
 
@@ -14,11 +14,15 @@ function [selected_dataset, img_path,default_params] = select_dataset(root_dir)
 
 ending_flag = 1;
 while(ending_flag)
+
      [filename, ~, ~] = uigetfile(root_dir);
-    %% change this tomorrow to avoid endless loop once we have no proper matfile(mostly when we change the computer)
+
+     if(strcmpi(filename, 'regret_file.txt'))
+        break
+     end
      % try to load mat file
      try
-        temp = load([root_dir '\' filename]).image_info;
+        temp = load([root_dir '\matfile_pool\'  filename]).image_info;
      catch
         warning('please select a mat file with image_info field!')
         continue
@@ -34,12 +38,19 @@ while(ending_flag)
             ending_flag=0;
         end
      end
+
+        dd = dir([root_dir, '/matfile_pool/*.mat']);
+     for ii = 1:length(dd)
+        if(strcmp(filename, dd(ii).name))
+            dataset_idx=ii;
+        end
+     end
 end
 
 
 img_path={};
-temp = load([root_dir '\' filename]).image_info;
-default_params = load([root_dir '\' filename]).params;
+temp = load([root_dir '\matfile_pool\' filename]).image_info;
+default_params = load([root_dir '\matfile_pool\' filename]).params;
 for ii = 1:length(temp)
     img_path{end+1} = [temp{ii,2},  '\' temp{ii,1}];
 end
