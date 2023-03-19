@@ -13,7 +13,8 @@ reward_max_interval = 4500;
 reward_min_interval = 2500;
 reward_step = 8;
 reward_duration = 100; % in miliseconds, but you need to verify this by testing your hardware
-
+FIX_CODE=1001;
+BREAK_CODE=1002;
 fixation_window = 1; % in degree, how large your fixation window is.
 max_break_time = 300; % how long you can accept for fixation break, in miliseconds.
 switch_token = 1;
@@ -70,10 +71,10 @@ pm.Dashboard = 1;
 pm2 = PropertyMonitor(rlh);  % display the state of rwd on the screen
 pm2.Dashboard = 2;
 
-bhv_code(1001, 'Fix', 1002, 'Break');
+bhv_code(FIX_CODE, 'Fix', BREAK_CODE, 'Break');
 oom = OnOffMarker(fix1);
-oom.OnMarker = 1001;
-oom.OffMarker = 1002;
+oom.OnMarker = FIX_CODE;
+oom.OffMarker = BREAK_CODE;
 
 con = Concurrent(img);
 con.add(rwd);
@@ -118,5 +119,15 @@ end
 % run_scene(pre_scene, 400+TrialRecord.User.current_idx);
 % run_scene(pre_scene, 500+TrialRecord.User.current_idx);
 run_scene(scene);
+
+for ii = 1:3
+    if(~fix1.Success)
+        run_scene(pre_scene,FIX_CODE);
+    else
+        run_scene(pre_scene,BREAK_CODE);
+    end
+end
+
+
 idle(0);
 set_iti(0);

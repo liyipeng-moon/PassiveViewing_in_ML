@@ -10,7 +10,7 @@ end
 
 %% parameters which should not change if we fix it
 imginfo_valut='C:\Users\user\Desktop\Preload\Img_vault';
-TrialRecord.User.image_train = 1000;
+TrialRecord.User.image_train = 100;
 switch_token=0;
 persistent ID dataset_memory
 
