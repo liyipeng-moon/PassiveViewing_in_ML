@@ -114,10 +114,13 @@ pre_scene = create_scene(tc);
 for ii = 1:5
     run_scene(pre_scene, 100+TrialRecord.User.current_idx);
 end
-% run_scene(pre_scene, 200+TrialRecord.User.current_idx);
-% run_scene(pre_scene, 300+TrialRecord.User.current_idx);
-% run_scene(pre_scene, 400+TrialRecord.User.current_idx);
-% run_scene(pre_scene, 500+TrialRecord.User.current_idx);
+if(~fix1.Success)
+    run_scene(pre_scene,FIX_CODE);
+else
+    run_scene(pre_scene,BREAK_CODE);
+end
+
+
 run_scene(scene);
 
 for ii = 1:3
