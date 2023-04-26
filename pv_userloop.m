@@ -1,6 +1,8 @@
 function [C,timingfile,userdefined_trialholder] = pv_userloop(MLConfig,TrialRecord)
 C=[];
-timingfile = 'st_test.m';
+
+timingfile = 'st_test_OE.m';
+%timingfile = 'st_test.m';
 userdefined_trialholder = '';
 persistent timing_filename_returned
 if isempty(timing_filename_returned)
@@ -9,7 +11,7 @@ if isempty(timing_filename_returned)
 end
 
 %% parameters which should not change if we fix it
-imginfo_valut='C:\Users\user\Desktop\Preload\Img_vault';
+imginfo_valut='G:\Img_vault';
 TrialRecord.User.image_train = 100;
 switch_token=0;
 persistent ID dataset_memory
@@ -18,9 +20,10 @@ persistent ID dataset_memory
 
 if (0==TrialRecord.CurrentTrialNumber) % the first trial
     % select data
-    [TrialRecord.User.current_set,TrialRecord.User.current_idx, img_path,default_params]=select_dataset(imginfo_valut);
+    [TrialRecord.User.current_set,TrialRecord.User.current_idx, TrialRecord.User.CategoryIdx, img_path,default_params]=select_dataset(imginfo_valut);
     dataset_memory=TrialRecord.Editable.switch_token;
     ID = [];
+
     for m=1:length(img_path)
         temp_img = mglimread(img_path{m});
         temp_img = mglimresize(temp_img,[default_params.img_size,default_params.img_size]);

@@ -1,4 +1,4 @@
-function [selected_dataset, dataset_idx, img_path,default_params] = select_dataset(root_dir)
+function [selected_dataset, dataset_idx, category_idx, img_path,default_params] = select_dataset(root_dir)
 
 % xx = dir([root_dir, '\*.mat']);
 
@@ -55,6 +55,5 @@ for ii = 1:length(temp)
     img_path{end+1} = [temp{ii,2},  '\' temp{ii,1}];
 end
 selected_dataset=filename;
-
-
+category_idx = load([root_dir '\matfile_pool\'  filename]).category.idx;
 end
