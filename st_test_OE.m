@@ -23,6 +23,7 @@ electrode_token  = 1;
 fix_dot_size = 0.2;
 ID = TrialRecord.User.imageIDs;
 Category_idx = TrialRecord.User.CategoryIdx;
+Category_info = TrialRecord.User.category_info;
 time_of_holding = (onset_time+offset_time)*length(ID);
 bhv_variable('Current_ID', TrialRecord.User.ImageIdx, 'DatasetName', TrialRecord.User.current_set,'Category_idx',TrialRecord.User.CategoryIdx)
 
@@ -78,17 +79,16 @@ rwd.Schedule =generate_rwd_time(reward_max_interval,reward_min_interval,reward_s
 
 pm = PropertyMonitor(fix1);  % display the state of rwd on the screen
 pm.Dashboard = 1;
-pm2 = PropertyMonitor(lh);  % display the state of rwd on the screen
-pm2.Dashboard = 2;
 
 con = Concurrent(lh);
 con.add(rwd);
 con.add(img);
 con.add(crc);
 con.add(pm);
-con.add(pm2);
+
 
 %% Timing System
+dashboard(2, sprintf(Category_info));
 dashboard(6, sprintf(['dataset - ' TrialRecord.User.current_set(1:end-4), '(n=' ,num2str(TrialRecord.User.imageset_size), ')']))
 dashboard(3, sprintf(['has been played for ' num2str(TrialRecord.User.played_times,3), ' cycles before,']))
 dashboard(5, sprintf(['onset = ' num2str(imglist{1,3}), ', offset = ' num2str(imglist{2,3})]))
