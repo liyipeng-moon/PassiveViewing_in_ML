@@ -27,6 +27,7 @@ Category_info = TrialRecord.User.category_info;
 time_of_holding = (onset_time+offset_time)*length(ID);
 bhv_variable('Current_ID', TrialRecord.User.ImageIdx, 'DatasetName', TrialRecord.User.current_set,'Category_idx',TrialRecord.User.CategoryIdx)
 
+single_marker = [2,4,8,16,32,128];
 %% this script is mainly for open ephys categorical test.
 % plase use 'FOB' dataset!
 %% image system
@@ -35,19 +36,25 @@ img = ImageChanger(null_);
     for img_trial_idx = 1:TrialRecord.User.image_train
         % set picture
         idx=2*img_trial_idx-1;
-        imglist(idx,1)={ID(TrialRecord.User.Trial_Loader(img_trial_idx))};
+        %imglist(idx,1)={ID(TrialRecord.User.Trial_Loader(img_trial_idx))};
+        imglist(idx,1)={ID(img_trial_idx)};
         imglist(idx,2)={[0,0]};
         imglist(idx,3)={onset_time};
-        imglist(idx,4)={Category_idx(TrialRecord.User.Trial_Loader(img_trial_idx))+40};
+        imglist(idx,4)={Category_idx(TrialRecord.User.Trial_Loader(img_trial_idx))};
+        imglist(idx,4)={single_marker(Category_idx(img_trial_idx))};
         % set blank
         idx=2*img_trial_idx;
         imglist(idx,1)={[]};
         imglist(idx,2)={[]};
         imglist(idx,3)={offset_time};
-        imglist(idx,4)={Category_idx(TrialRecord.User.Trial_Loader(img_trial_idx))+50};
+        imglist(idx,4)={single_marker(Category_idx(TrialRecord.User.Trial_Loader(img_trial_idx)))};
+        imglist(idx,4)={0};
     end
     img.List=imglist;
     img.DurationUnit='mesc';
+    %disp(TrialRecord.User.Trial_Loader(1:5))
+    %disp(Category_idx(TrialRecord.User.Trial_Loader(1:5)))
+    imglist([1,3,5,7,9],4)'
 %% fixation system 
 % give names to the TaskObjects defined in the conditions file:
 fixation_point = 1;
@@ -107,11 +114,11 @@ end
 scene = create_scene(con);
 pre_scene = create_scene(con0);
 %% run scene
-run_scene(pre_scene, 1)
+run_scene(pre_scene, 0)
 error_type=0;
 if(wth0.Success)
-    goodmonkey(100, 'juiceline', 1, 'numreward', 1, 'pausetime', 100, 'eventmarker', 90, 'nonblocking', 2);
-    run_scene(scene,2);
+    goodmonkey(100, 'juiceline', 1, 'numreward', 1, 'pausetime', 100, 'eventmarker', 0, 'nonblocking', 2);
+    run_scene(scene,0);
 elseif(wth0.Waiting)
     %run_scene(pre_scene,BREAK_CODE);
     error_type=4;

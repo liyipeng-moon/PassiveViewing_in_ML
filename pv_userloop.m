@@ -12,7 +12,7 @@ end
 
 %% parameters which should not change if we fix it
 imginfo_valut='D:\Img_vault';
-TrialRecord.User.image_train = 100;
+TrialRecord.User.image_train = 50;
 switch_token=0;
 persistent ID dataset_memory
 
@@ -84,6 +84,7 @@ C = {'fix(0,0)'};
 % Send the IDs to the timing script. You can chose only a subset or
 % randomize their order for the condition of each trial.
 TrialRecord.User.imageIDs = ID(TrialRecord.User.Trial_Loader(1:TrialRecord.User.image_train));
+TrialRecord.User.imageIDs = ID;
 TrialRecord.User.ImageIdx = TrialRecord.User.Trial_Loader(1:TrialRecord.User.image_train);
 TrialRecord.User.Trial_Loader(1:TrialRecord.User.image_train)=[];
 
