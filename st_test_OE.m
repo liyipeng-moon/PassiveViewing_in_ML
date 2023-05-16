@@ -23,13 +23,12 @@ electrode_token  = 1;
 fix_dot_size = 0.2;
 ID = TrialRecord.User.imageIDs;
 Category_idx = TrialRecord.User.CategoryIdx;
-Category_info = TrialRecord.User.category_info;
 time_of_holding = (onset_time+offset_time)*length(ID);
 bhv_variable('Current_ID', TrialRecord.User.ImageIdx, 'DatasetName', TrialRecord.User.current_set,'Category_idx',TrialRecord.User.CategoryIdx)
 
 single_marker = [2,4,8,16,32,128];
 %% this script is mainly for open ephys categorical test.
-% plase use 'FOB' dataset!
+
 %% image system
 img = ImageChanger(null_);
     imglist = cell(TrialRecord.User.image_train*2,4);
@@ -41,20 +40,16 @@ img = ImageChanger(null_);
         imglist(idx,2)={[0,0]};
         imglist(idx,3)={onset_time};
         imglist(idx,4)={Category_idx(TrialRecord.User.Trial_Loader(img_trial_idx))};
-        imglist(idx,4)={single_marker(Category_idx(img_trial_idx))};
         % set blank
         idx=2*img_trial_idx;
         imglist(idx,1)={[]};
         imglist(idx,2)={[]};
         imglist(idx,3)={offset_time};
-        imglist(idx,4)={single_marker(Category_idx(TrialRecord.User.Trial_Loader(img_trial_idx)))};
-        imglist(idx,4)={0};
+        imglist(idx,4)={Category_idx(TrialRecord.User.Trial_Loader(img_trial_idx))+10};
     end
     img.List=imglist;
     img.DurationUnit='mesc';
-    %disp(TrialRecord.User.Trial_Loader(1:5))
-    %disp(Category_idx(TrialRecord.User.Trial_Loader(1:5)))
-    imglist([1,3,5,7,9],4)'
+
 %% fixation system 
 % give names to the TaskObjects defined in the conditions file:
 fixation_point = 1;
@@ -95,7 +90,6 @@ con.add(pm);
 
 
 %% Timing System
-dashboard(2, sprintf(Category_info));
 dashboard(6, sprintf(['dataset - ' TrialRecord.User.current_set(1:end-4), '(n=' ,num2str(TrialRecord.User.imageset_size), ')']))
 dashboard(3, sprintf(['has been played for ' num2str(TrialRecord.User.played_times,3), ' cycles before,']))
 dashboard(5, sprintf(['onset = ' num2str(imglist{1,3}), ', offset = ' num2str(imglist{2,3})]))

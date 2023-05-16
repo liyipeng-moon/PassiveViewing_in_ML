@@ -1,6 +1,6 @@
 function [C,timingfile,userdefined_trialholder] = pv_userloop(MLConfig,TrialRecord)
 C=[];
-
+addpath(genpath(pwd))
 timingfile = 'st_test_OE.m';
 %timingfile = 'st_test.m';
 userdefined_trialholder = '';
@@ -11,7 +11,7 @@ if isempty(timing_filename_returned)
 end
 
 %% parameters which should not change if we fix it
-imginfo_valut='D:\Img_vault';
+imginfo_valut='C:\Users\PC\Desktop\Img_vault';
 TrialRecord.User.image_train = 50;
 switch_token=0;
 persistent ID dataset_memory
@@ -20,7 +20,7 @@ persistent ID dataset_memory
 
 if (0==TrialRecord.CurrentTrialNumber) % the first trial
     % select data
-    [TrialRecord.User.current_set,TrialRecord.User.current_idx, TrialRecord.User.CategoryIdx, img_path,default_params, TrialRecord.User.category_info]=select_dataset(imginfo_valut);
+    [TrialRecord.User.current_set,TrialRecord.User.current_idx, TrialRecord.User.CategoryIdx, img_path,default_params, TrialRecord.User.category_info, TrialRecord.User.example_img]=select_dataset(imginfo_valut);
     dataset_memory=TrialRecord.Editable.switch_token;
     ID = [];
 
@@ -46,7 +46,7 @@ if (0==TrialRecord.CurrentTrialNumber) % the first trial
 else % if this is not the first trial
     if(TrialRecord.Editable.switch_token~=dataset_memory) % if we want to change dataset
         dataset_memory = TrialRecord.Editable.switch_token;
-        [TrialRecord.User.current_set,TrialRecord.User.current_idx, img_path,default_params, TrialRecord.User.category_info]=select_dataset(imginfo_valut);
+        [TrialRecord.User.current_set,TrialRecord.User.current_idx, TrialRecord.User.CategoryIdx, img_path,default_params, TrialRecord.User.category_info, TrialRecord.User.example_img]=select_dataset(imginfo_valut);
         dataset_memory=TrialRecord.Editable.switch_token;
         ID = [];
         for m=1:length(img_path)
@@ -55,7 +55,6 @@ else % if this is not the first trial
             ID(m) = mgladdbitmap(temp_img);  % mgladdbitmap returns an MGL object ID that is a double scalar.
         end
         mglsetproperty(ID,'active',false);  % Turn off all images.
-    
         % set parameteres about the progress
         TrialRecord.User.played_images = 0;
         TrialRecord.User.played_times=0;
@@ -84,8 +83,8 @@ C = {'fix(0,0)'};
 % Send the IDs to the timing script. You can chose only a subset or
 % randomize their order for the condition of each trial.
 TrialRecord.User.imageIDs = ID(TrialRecord.User.Trial_Loader(1:TrialRecord.User.image_train));
-TrialRecord.User.imageIDs = ID;
 TrialRecord.User.ImageIdx = TrialRecord.User.Trial_Loader(1:TrialRecord.User.image_train);
 TrialRecord.User.Trial_Loader(1:TrialRecord.User.image_train)=[];
-
+imshow(TrialRecord.User.example_img);
+title(TrialRecord.User.category_info,'Interpreter','none')
 end

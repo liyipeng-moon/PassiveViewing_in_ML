@@ -1,4 +1,4 @@
-function [selected_dataset, dataset_idx, category_idx, img_path,default_params, category_info] = select_dataset(root_dir)
+function [selected_dataset, dataset_idx, category_idx, img_path,default_params, category_info, example_img] = select_dataset(root_dir)
 
 % xx = dir([root_dir, '\*.mat']);
 
@@ -15,14 +15,15 @@ function [selected_dataset, dataset_idx, category_idx, img_path,default_params, 
 ending_flag = 1;
 while(ending_flag)
 
-     [filename, ~, ~] = uigetfile(root_dir);
-
-     if(strcmpi(filename, 'regret_file.txt'))
+     [filename, ~, ~] = uigetfile([root_dir, '\datasets\*png']);
+     example_img = imread([root_dir, '\datasets\', filename]);
+     if(strcmpi(filename, 'Noise.png'))
         break
      end
+     filename = filename(1:end-4);
      % try to load mat file
      try
-        temp = load([root_dir '\matfile_pool\'  filename]).image_info;
+        temp = load([root_dir '\matfile_pool\'  filename '.mat']).image_info;
      catch
         warning('please select a mat file with image_info field!')
         continue
@@ -41,7 +42,7 @@ while(ending_flag)
 
         dd = dir([root_dir, '/matfile_pool/*.mat']);
      for ii = 1:length(dd)
-        if(strcmp(filename, dd(ii).name))
+        if(strcmp([filename '.mat'], dd(ii).name))
             dataset_idx=ii;
         end
      end
@@ -62,5 +63,8 @@ category_info = [];
 for ii = 1:length(category_nm)
     category_info = [category_info, num2str(ii), '-' category_nm{ii}, '; '];
 end
+
+
+
 
 end
