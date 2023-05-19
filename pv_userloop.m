@@ -4,12 +4,22 @@ addpath(genpath(pwd))
 timingfile = 'st_test_OE.m';
 %timingfile = 'st_test.m';
 userdefined_trialholder = '';
-persistent timing_filename_returned
+persistent timing_filename_returned; global zeroMQ_handle;
 if isempty(timing_filename_returned)
     timing_filename_returned = true;
     return
 end
 
+if(strcmp(timingfile,'st_test_OE.m'))
+    OE_IP = '222.29.33.102';
+    OE_config = connect_OE(OE_IP);
+    if(OE_config.success)
+        TrialRecord.User.O = 1;
+    else
+        warning('Fail to Connect OE, see message above')
+        return
+    end
+end
 %% parameters which should not change if we fix it
 imginfo_valut='C:\Users\PC\Desktop\Img_vault';
 TrialRecord.User.image_train = 50;
@@ -20,10 +30,10 @@ persistent ID dataset_memory
 
 if (0==TrialRecord.CurrentTrialNumber) % the first trial
     % select data
-    [TrialRecord.User.current_set,TrialRecord.User.current_idx, TrialRecord.User.CategoryIdx, img_path,default_params, TrialRecord.User.category_info, TrialRecord.User.example_img]=select_dataset(imginfo_valut);
+    [TrialRecord.User.current_set,TrialRecord.User.current_idx, TrialRecord.User.CategoryIdx, img_path,default_params, TrialRecord.User.category_info, TrialRecord.User.example_img,TrialRecord.User.condition_nm]=select_dataset(imginfo_valut);
+    if(strcmp(timingfile,'st_test_OE.m')) Send_condition_to_OE(TrialRecord.User, OE_config); end
     dataset_memory=TrialRecord.Editable.switch_token;
     ID = [];
-
     for m=1:length(img_path)
         temp_img = mglimread(img_path{m});
         temp_img = mglimresize(temp_img,[default_params.img_size,default_params.img_size]);
