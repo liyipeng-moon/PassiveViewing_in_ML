@@ -32,7 +32,7 @@ global zeroMQ_handle
 
     zeroMQ_url = ['tcp://' OE_IP ':5556']; %
     if(isempty(zeroMQ_handle))
-        zeroMQ_handle = zeroMQwrapper('StartConnectThread',url);
+        zeroMQ_handle = zeroMQwrapper('StartConnectThread',zeroMQ_url);
     else
     end
 end

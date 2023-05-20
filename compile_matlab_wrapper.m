@@ -11,16 +11,16 @@ mex -setup
 
 GUIfolder = pwd;
 
-headerFolder = [GUIfolder, '/windows-libs/ZeroMQ/include'];
+headerFolder = [GUIfolder, '/util/windows-libs/ZeroMQ/include'];
 
 if strcmp(computer,'PCWIN')
     libFolder = [GUIfolder, '/Resources/ZeroMQ/lib_x86'];
     libraryName = 'libzmq-v110-mt-3_2_2';
     cppFile = 'windows/zeroMQwrapper.cpp';
 elseif strcmp(computer,'PCWIN64') % change this
-    libFolder = [GUIfolder, '/windows-libs/ZeroMQ/lib_x64'];
+    libFolder = [GUIfolder, '/util/windows-libs/ZeroMQ/lib_x64'];
     libraryName = 'libzmq-v110-mt-3_2_2';
-    cppFile = 'windows/zeroMQwrapper.cpp';
+    cppFile = 'util/windows/zeroMQwrapper.cpp';
 elseif strcmp(computer,'GLNX86') || strcmp(computer,'GLNXA64')
     libFolder = '/usr/local/lib';
     libraryName = 'zmq';

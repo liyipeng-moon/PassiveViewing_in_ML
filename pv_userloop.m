@@ -57,6 +57,7 @@ else % if this is not the first trial
     if(TrialRecord.Editable.switch_token~=dataset_memory) % if we want to change dataset
         dataset_memory = TrialRecord.Editable.switch_token;
         [TrialRecord.User.current_set,TrialRecord.User.current_idx, TrialRecord.User.CategoryIdx, img_path,default_params, TrialRecord.User.category_info, TrialRecord.User.example_img]=select_dataset(imginfo_valut);
+        if(strcmp(timingfile,'st_test_OE.m')) Send_condition_to_OE(TrialRecord.User, OE_config); end
         dataset_memory=TrialRecord.Editable.switch_token;
         ID = [];
         for m=1:length(img_path)

@@ -1,6 +1,6 @@
 if ~exist('eye_','var'), error('This demo requires eye signal input. Please set it up or try the simulation mode.'); end
 hotkey('x', 'escape_screen(); assignin(''caller'',''continue_'',false);');
-global zeroMQ_handle;
+
 editable('onset_time', 'offset_time', 'reward_max_interval','reward_min_interval','reward_step', 'reward_duration', 'fixation_window', 'max_break_time','switch_token','electrode_token')
 onset_time=200;
 offset_time=200;
@@ -23,16 +23,14 @@ electrode_token  = 1;
 fix_dot_size = 0.2;
 ID = TrialRecord.User.imageIDs;
 Category_idx = TrialRecord.User.CategoryIdx;
-Category_name = TrialRecord.User.condition_nm;
 time_of_holding = (onset_time+offset_time)*length(ID);
-
 bhv_variable('Current_ID', TrialRecord.User.ImageIdx, 'DatasetName', TrialRecord.User.current_set,'Category_idx',TrialRecord.User.CategoryIdx)
 
 single_marker = [2,4,8,16,32,128];
 %% this script is mainly for open ephys categorical test.
 
 %% image system
-img = MyImageChanger(null_);
+img = ImageChanger(null_);
     imglist = cell(TrialRecord.User.image_train*2,4);
     for img_trial_idx = 1:TrialRecord.User.image_train
         % set picture
@@ -42,17 +40,14 @@ img = MyImageChanger(null_);
         imglist(idx,2)={[0,0]};
         imglist(idx,3)={onset_time};
         imglist(idx,4)={Category_idx(TrialRecord.User.Trial_Loader(img_trial_idx))};
-        imglist(idx,6)={Category_name{Category_idx(TrialRecord.User.Trial_Loader(img_trial_idx))}};
         % set blank
         idx=2*img_trial_idx;
         imglist(idx,1)={[]};
         imglist(idx,2)={[]};
         imglist(idx,3)={offset_time};
         imglist(idx,4)={Category_idx(TrialRecord.User.Trial_Loader(img_trial_idx))+10};
-        imglist(idx,6)={'off'};
     end
     img.List=imglist;
-    img.zeroMQ = zeroMQ_handle;
     img.DurationUnit='mesc';
 
 %% fixation system 
