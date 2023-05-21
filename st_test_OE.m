@@ -24,7 +24,7 @@ fix_dot_size = 0.2;
 ID = TrialRecord.User.imageIDs;
 Category_idx = TrialRecord.User.CategoryIdx;
 Category_name = TrialRecord.User.condition_nm;
-time_of_holding = (onset_time+offset_time)*length(ID);
+time_of_holding = (onset_time+offset_time)*length(ID)+1000;
 
 bhv_variable('Current_ID', TrialRecord.User.ImageIdx, 'DatasetName', TrialRecord.User.current_set,'Category_idx',TrialRecord.User.CategoryIdx)
 
@@ -73,7 +73,6 @@ wth0.HoldTime = hold_time_to_start;
 con0 = Concurrent(wth0);
 con0.add(crc);
 % scene 2: fixation
-
 fix1 = SingleTarget(eye_);
 fix1.Target = fixation_point;
 fix1.Threshold = fixation_window;
@@ -93,22 +92,10 @@ con.add(img);
 con.add(crc);
 con.add(pm);
 
-
 %% Timing System
-dashboard(6, sprintf(['dataset - ' TrialRecord.User.current_set(1:end-4), '(n=' ,num2str(TrialRecord.User.imageset_size), ')']))
-dashboard(3, sprintf(['has been played for ' num2str(TrialRecord.User.played_times,3), ' cycles before,']))
-dashboard(5, sprintf(['onset = ' num2str(imglist{1,3}), ', offset = ' num2str(imglist{2,3})]))
-counter_num = floor((10*TrialRecord.User.image_train)/(TrialRecord.User.imageset_size));
-time_cycle = TrialRecord.User.imageset_size * (onset_time+offset_time) /10;
-for ii = 1:counter_num
-    tc(ii) = TimeCounter(null_);
-    tc(ii).Duration = ii*time_cycle;
-    ood(ii) = OnOffDisplay(tc(ii));
-    ood(ii).Dashboard = 4;
-    ood(ii).OnMessage = ['new ', num2str(floor(ii/10)), '.' ,num2str(mod(ii,10)) ,' cycle displayed'];
-    ood(ii).OffMessage = 'new cycle waiting';
-    con.add(ood(ii))
-end
+dashboard(2, sprintf(['has been played for ' num2str(TrialRecord.User.played_times,3), ' cycles before,']))
+dashboard(3, sprintf(['dataset - ' TrialRecord.User.current_set, '(n=' ,num2str(TrialRecord.User.imageset_size), ')']))
+dashboard(4, sprintf(['onset = ' num2str(imglist{1,3}), ', offset = ' num2str(imglist{2,3})]))
 %% create scene
 scene = create_scene(con);
 pre_scene = create_scene(con0);
@@ -119,7 +106,6 @@ if(wth0.Success)
     goodmonkey(100, 'juiceline', 1, 'numreward', 1, 'pausetime', 100, 'eventmarker', 0, 'nonblocking', 2);
     run_scene(scene,0);
 elseif(wth0.Waiting)
-    %run_scene(pre_scene,BREAK_CODE);
     error_type=4;
 else
     error_type=3;
