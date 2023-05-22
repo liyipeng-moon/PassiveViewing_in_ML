@@ -2,12 +2,15 @@ if ~exist('eye_','var'), error('This demo requires eye signal input. Please set 
 hotkey('x', 'escape_screen(); assignin(''caller'',''continue_'',false);');
 global zeroMQ_handle;
 editable('onset_time', 'offset_time', 'reward_max_interval','reward_min_interval','reward_step', 'reward_duration', 'fixation_window', 'max_break_time','switch_token','electrode_token')
+
+
 onset_time=200;
 offset_time=200;
-if(TrialRecord.User.first_trial)
-    onset_time = TrialRecord.User.default_onset;
-    offset_time = TrialRecord.User.default_offset;
-end
+
+%if(TrialRecord.User.first_trial)
+    % onset_time = TrialRecord.User.default_onset;
+    % offset_time = TrialRecord.User.default_offset;
+%end 
 
 reward_max_interval = 4500;
 reward_min_interval = 2500;
@@ -28,10 +31,9 @@ time_of_holding = (onset_time+offset_time)*length(ID)+1000;
 
 bhv_variable('Current_ID', TrialRecord.User.ImageIdx, 'DatasetName', TrialRecord.User.current_set,'Category_idx',TrialRecord.User.CategoryIdx)
 
-single_marker = [2,4,8,16,32,128];
 %% this script is mainly for open ephys categorical test.
 
-%% image system
+% image system
 img = MyImageChanger(null_);
     imglist = cell(TrialRecord.User.image_train*2,4);
     for img_trial_idx = 1:TrialRecord.User.image_train
@@ -41,14 +43,14 @@ img = MyImageChanger(null_);
         imglist(idx,1)={ID(img_trial_idx)};
         imglist(idx,2)={[0,0]};
         imglist(idx,3)={onset_time};
-        imglist(idx,4)={Category_idx(TrialRecord.User.Trial_Loader(img_trial_idx))};
+        imglist(idx,4)={60+Category_idx(TrialRecord.User.Trial_Loader(img_trial_idx))};
         imglist(idx,6)={Category_name{Category_idx(TrialRecord.User.Trial_Loader(img_trial_idx))}};
         % set blank
         idx=2*img_trial_idx;
         imglist(idx,1)={[]};
         imglist(idx,2)={[]};
         imglist(idx,3)={offset_time};
-        imglist(idx,4)={Category_idx(TrialRecord.User.Trial_Loader(img_trial_idx))+10};
+        imglist(idx,4)={30+Category_idx(TrialRecord.User.Trial_Loader(img_trial_idx))};
         imglist(idx,6)={'off'};
     end
     img.List=imglist;
@@ -78,7 +80,7 @@ fix1.Target = fixation_point;
 fix1.Threshold = fixation_window;
 lh = LooseHold(fix1);
 lh.HoldTime = time_of_holding;
-lh.BreakTime = 300;
+lh.BreakTime = max_break_time;
 
 rwd = RewardScheduler(null_);
 rwd.Schedule =generate_rwd_time(reward_max_interval,reward_min_interval,reward_step,reward_duration);
@@ -86,25 +88,25 @@ rwd.Schedule =generate_rwd_time(reward_max_interval,reward_min_interval,reward_s
 pm = PropertyMonitor(fix1);  % display the state of rwd on the screen
 pm.Dashboard = 1;
 
-con = Concurrent(lh);
-con.add(rwd);
-con.add(img);
-con.add(crc);
-con.add(pm);
+con1 = Concurrent(lh);
+con1.add(rwd);
+con1.add(img);
+con1.add(crc);
+con1.add(pm);
 
 %% Timing System
 dashboard(2, sprintf(['has been played for ' num2str(TrialRecord.User.played_times,3), ' cycles before,']))
 dashboard(3, sprintf(['dataset - ' TrialRecord.User.current_set, '(n=' ,num2str(TrialRecord.User.imageset_size), ')']))
 dashboard(4, sprintf(['onset = ' num2str(imglist{1,3}), ', offset = ' num2str(imglist{2,3})]))
 %% create scene
-scene = create_scene(con);
+scene = create_scene(con1);
 pre_scene = create_scene(con0);
 %% run scene
 run_scene(pre_scene, 0)
 error_type=0;
 if(wth0.Success)
     goodmonkey(100, 'juiceline', 1, 'numreward', 1, 'pausetime', 100, 'eventmarker', 0, 'nonblocking', 2);
-    run_scene(scene,0);
+    run_scene(scene,11); % 11 = start presenting images
 elseif(wth0.Waiting)
     error_type=4;
 else

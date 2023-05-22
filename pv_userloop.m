@@ -1,20 +1,22 @@
 function [C,timingfile,userdefined_trialholder] = pv_userloop(MLConfig,TrialRecord)
+persistent timing_filename_returned ID dataset_memory; global zeroMQ_handle;
+
 C=[];
 addpath(genpath(pwd))
 timingfile = 'st_test_OE.m';
 %timingfile = 'st_test.m';
 userdefined_trialholder = '';
-persistent timing_filename_returned ID dataset_memory; global zeroMQ_handle;
 if isempty(timing_filename_returned)
     timing_filename_returned = true;
     return
 end
 
 %% parameters which should not change if we fix it
-OE_IP = '222.29.33.102';
-OE_IP = '192.1168.3.41';
+Local_OE_IP = '222.29.33.102';
+WKS_OE_IP = '192.1168.3.41';
+OE_IP = Local_OE_IP;
 imginfo_valut='C:\Users\PC\Desktop\Img_vault';
-TrialRecord.User.image_train = 50;
+TrialRecord.User.image_train = 200;
 switch_token=0;
 
 %% Connecting to OE
@@ -39,7 +41,6 @@ if (0==TrialRecord.CurrentTrialNumber) % the first trial
         ID(m) = mgladdbitmap(temp_img);  % mgladdbitmap returns an MGL object ID that is a double scalar.
     end
     mglsetproperty(ID,'active',false);  % Turn off all images.
-
     % set parameteres about the progress
     TrialRecord.User.played_images = 0;
     TrialRecord.User.played_times=0;
@@ -48,9 +49,9 @@ if (0==TrialRecord.CurrentTrialNumber) % the first trial
     for ww = 1:1000
         TrialRecord.User.Trial_Loader=[TrialRecord.User.Trial_Loader, randperm(TrialRecord.User.imageset_size)];
     end
-    TrialRecord.User.first_trial = 1;
-    TrialRecord.User.default_onset = default_params.onset_time;
-    TrialRecord.User.default_offset = default_params.offset_time;
+%     TrialRecord.User.first_trial = 1;
+%     TrialRecord.User.default_onset = default_params.onset_time;
+%     TrialRecord.User.default_offset = default_params.offset_time;
 else % if this is not the first trial
     if(TrialRecord.Editable.switch_token~=dataset_memory) % if we want to change dataset
         dataset_memory = TrialRecord.Editable.switch_token;
@@ -72,18 +73,27 @@ else % if this is not the first trial
         for ww = 1:1000
             TrialRecord.User.Trial_Loader=[TrialRecord.User.Trial_Loader, randperm(TrialRecord.User.imageset_size)];
         end
-        TrialRecord.User.first_trial = 1;
-        TrialRecord.User.default_onset = default_params.onset_time;
-        TrialRecord.User.default_offset = default_params.offset_time;
+%         TrialRecord.User.first_trial = 1;
+%         TrialRecord.User.default_onset = default_params.onset_time;
+%         TrialRecord.User.default_offset = default_params.offset_time;
     else 
         % if we don't change dataset, just update the presentation progress
         % check how long last trial lasts
         % only do this when we don't switch dataset.
         if(TrialRecord.CurrentTrialNumber>0)
-            TrialRecord.User.played_images = TrialRecord.User.played_images+TrialRecord.LastTrialCodes.CodeTimes(end) / (TrialRecord.Editable.onset_time+TrialRecord.Editable.offset_time);
-            TrialRecord.User.played_times =  TrialRecord.User.played_images/TrialRecord.User.imageset_size;
+            last_ev_code = TrialRecord.LastTrialCodes.CodeTimes(end);
+            if(strcmp(timingfile,'st_test_OE.m'))
+                idx = find(TrialRecord.LastTrialCodes.CodeNumbers==11);
+                first_ev_code = TrialRecord.LastTrialCodes.CodeTimes(idx);
+            else
+                first_ev_code = 0;
+            end
+            if(~isempty(first_ev_code))
+                TrialRecord.User.played_images = TrialRecord.User.played_images+ (last_ev_code-first_ev_code) / (TrialRecord.Editable.onset_time+TrialRecord.Editable.offset_time);
+                TrialRecord.User.played_times =  TrialRecord.User.played_images/TrialRecord.User.imageset_size;
+            end
         end
-        TrialRecord.User.first_trial = 0;
+%         TrialRecord.User.first_trial = 0;
     end
 end
 
