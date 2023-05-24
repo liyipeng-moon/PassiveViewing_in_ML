@@ -44,17 +44,39 @@ for cc = 1:length(FOB_category)
     end
 end
 %% For WKS
+cd ..\ %  .mexw64 file should be within the current folder? 
+global zeroMQ_handle
 Local_OE_IP = '222.29.33.102';
 WKS_OE_IP = '192.1168.3.41';
 OE_IP = Local_OE_IP;
 zeroMQ_url = ['tcp://' OE_IP ':5556']; %
-if(isempty(zeroMQ_handle))
+if(isempty(zeroMQ_handle)) % if connected already, reStartConnect would lead to collapse 
     zeroMQ_handle = zeroMQwrapper('StartConnectThread',zeroMQ_url);
 end
-
 for ii = 1:100
     pause(0.2)
     zeroMQwrapper('Send',zeroMQ_handle ,FOB_category{randi(6)});
     pause(0.2)
     zeroMQwrapper('Send',zeroMQ_handle ,'off');
 end
+
+
+% check whether averaged or single trial
+for ii = 1:10000
+    xx = randi(6);
+    switch xx
+        case 1
+            zeroMQwrapper('Send',zeroMQ_handle , 'Body');
+            pause(1+rand)
+        case 2
+            zeroMQwrapper('Send',zeroMQ_handle , 'Body');
+            pause(1+rand)
+        case 3
+            zeroMQwrapper('Send',zeroMQ_handle , 'Hand');
+            pause(1+rand)
+        otherwise
+            zeroMQwrapper('Send',zeroMQ_handle ,'Face');
+            pause(1+rand)
+    end
+end
+   
