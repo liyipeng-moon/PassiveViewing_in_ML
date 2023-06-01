@@ -4,7 +4,7 @@ persistent timing_filename_returned ID dataset_memory; global zeroMQ_handle;
 C=[];
 addpath(genpath(pwd))
 timingfile = 'st_test_OE.m';
-%timingfile = 'st_test.m';
+timingfile = 'st_test.m';
 userdefined_trialholder = '';
 if isempty(timing_filename_returned)
     timing_filename_returned = true;
@@ -15,7 +15,7 @@ end
 Local_OE_IP = '222.29.33.102';
 WKS_OE_IP = '192.1168.3.41';
 OE_IP = Local_OE_IP;
-imginfo_valut='C:\Users\PC\Desktop\Img_vault';
+imginfo_valut='D:\Img_vault';
 TrialRecord.User.image_train = 200;
 switch_token=0;
 
@@ -101,7 +101,7 @@ end
 C = {'fix(0,0)'};
 % Send the IDs to the timing script. You can chose only a subset or
 % randomize their order for the condition of each trial.
-TrialRecord.User.imageIDs = ID(TrialRecord.User.Trial_Loader(1:TrialRecord.User.image_train));
+TrialRecord.User.imageIDs = ID;
 TrialRecord.User.ImageIdx = TrialRecord.User.Trial_Loader(1:TrialRecord.User.image_train);
 TrialRecord.User.Trial_Loader(1:TrialRecord.User.image_train)=[];
 imshow(TrialRecord.User.example_img);title(TrialRecord.User.category_info,'Interpreter','none')

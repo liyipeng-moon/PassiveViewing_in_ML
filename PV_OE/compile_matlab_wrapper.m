@@ -8,9 +8,9 @@
 
 % 1. make sure mex is setup properly and a compiler is available
 mex -setup
-
+cd ..
 GUIfolder = pwd;
-
+cd PV_OE
 headerFolder = [GUIfolder, '/util/windows-libs/ZeroMQ/include'];
 
 if strcmp(computer,'PCWIN')
@@ -20,7 +20,7 @@ if strcmp(computer,'PCWIN')
 elseif strcmp(computer,'PCWIN64') % change this
     libFolder = [GUIfolder, '/util/windows-libs/ZeroMQ/lib_x64'];
     libraryName = 'libzmq-v110-mt-3_2_2';
-    cppFile = 'util/windows/zeroMQwrapper.cpp';
+    cppFile = '../util/windows/zeroMQwrapper.cpp';
 elseif strcmp(computer,'GLNX86') || strcmp(computer,'GLNXA64')
     libFolder = '/usr/local/lib';
     libraryName = 'zmq';

@@ -4,6 +4,7 @@ classdef MyImageChanger < mladapter
         List
         zeroMQ
         Repetition = 1
+        DeviceFreeMode
     end
     properties (Hidden)
         ImageList
@@ -78,7 +79,7 @@ classdef MyImageChanger < mladapter
                 obj.PrevImageIdx = ImageIdx;
                 mglsetproperty(obj.GraphicID{ImageIdx},'active',true,'origin',obj.ScrPosition{ImageIdx});
                 p.eventmarker(obj.List{ImageIdx,4});
-                zeroMQwrapper('Send',obj.zeroMQ ,obj.List{ImageIdx,6});
+                if(~obj.DeviceFreeMode) zeroMQwrapper('Send',obj.zeroMQ ,obj.List{ImageIdx,6}); end
             end
         end
     end

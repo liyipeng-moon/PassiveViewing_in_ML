@@ -1,6 +1,6 @@
 if ~exist('eye_','var'), error('This demo requires eye signal input. Please set it up or try the simulation mode.'); end
 hotkey('x', 'escape_screen(); assignin(''caller'',''continue_'',false);');
-global zeroMQ_handle;
+global zeroMQ_handle DeviceFreeMode;
 editable('onset_time', 'offset_time', 'reward_max_interval','reward_min_interval','reward_step', 'reward_duration', 'fixation_window', 'max_break_time','switch_token','electrode_token')
 
 
@@ -53,6 +53,7 @@ img = MyImageChanger(null_);
         imglist(idx,4)={30+Category_idx(TrialRecord.User.Trial_Loader(img_trial_idx))};
         imglist(idx,6)={'off'};
     end
+    img.DeviceFreeMode=DeviceFreeMode;
     img.List=imglist;
     img.zeroMQ = zeroMQ_handle;
     img.DurationUnit='mesc';

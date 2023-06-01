@@ -4,8 +4,12 @@ apply passive viewing paradigm in monkey logic
 install NIMH Monkey Logic at https://monkeylogic.nimh.nih.gov/
 
 modify your image vault in pv_userloop, load condition file in main menu and run!
+if you don't have a AO or OE connected to ML PC through a network events, please set DeviceFreeMode=1 in user_loop
+#Update
+After 20230601, two experiment(AO or OE) were placed into 2 folders.
+Please use relative path for images
 
-you need to put RealTimeLooseHold.m in your ML ext path to run the demo.
+
 # Rewrited RealTimeLooseHold
 ### Why we need to rewrite this adapter
 ##### Our Goals in passive viewing paradigm are as follows:
