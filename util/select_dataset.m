@@ -1,16 +1,4 @@
-function [selected_dataset, dataset_idx, category_idx, img_path,default_params, category_info, example_img, category_nm] = select_dataset(root_dir)
-
-% xx = dir([root_dir, '\*.mat']);
-
-% list={}; 
-% image_number = [];
-% for ii = 1:length(xx)
-%     temp = load([root_dir '\' xx(ii).name]).image_info;
-%     list{end+1}=[xx(ii).name(1:end-4) ', n = ' num2str(length(temp))];
-% end
-% [indx,~] = listdlg('PromptString',{'Select a mat file',''},'SelectionMode','single','ListString',list,'ListSize',[550,250]);
-% selected_dataset = xx(indx).name;
-
+function [img_info] = select_dataset(root_dir)
 
 ending_flag = 1;
 while(ending_flag)
@@ -31,7 +19,7 @@ while(ending_flag)
 
      % check can we got all images
      for ii = 1:length(temp)
-        if(~exist([temp{ii,2},  '\' temp{ii,1}]))
+        if(~exist([root_dir '\' temp{ii,2},  '\' temp{ii,1}]))
             warning([ 'image ',temp{ii,2},  '\' ,temp{ii,1},' does not exist'])
             ending_flag=1;
             break
@@ -53,7 +41,7 @@ img_path={};
 temp = load([root_dir '\matfile_pool\' filename]).image_info;
 default_params = load([root_dir '\matfile_pool\' filename]).params;
 for ii = 1:length(temp)
-    img_path{end+1} = [temp{ii,2},  '\' temp{ii,1}];
+    img_path{end+1} = [root_dir '\' temp{ii,2},  '\' temp{ii,1}];
 end
 selected_dataset=filename;
 category_idx = load([root_dir '\matfile_pool\'  filename]).category.idx;
@@ -64,7 +52,13 @@ for ii = 1:length(category_nm)
     category_info = [category_info, num2str(ii), '-' category_nm{ii}, '; '];
 end
 
-
-
+img_info.selected_dataset = selected_dataset;
+img_info.dataset_idx = dataset_idx;
+img_info.category_idx = category_idx;
+img_info.img_path = img_path;
+img_info.default_params = default_params;
+img_info.category_info = category_info;
+img_info.example_img = example_img;
+img_info.condition_nm = category_nm;
 
 end

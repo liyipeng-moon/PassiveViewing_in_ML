@@ -25,11 +25,11 @@ switch_token = 1;
 electrode_token  = 1;
 fix_dot_size = 0.2;
 ID = TrialRecord.User.imageIDs;
-Category_idx = TrialRecord.User.CategoryIdx;
-Category_name = TrialRecord.User.condition_nm;
+Category_idx = TrialRecord.User.img_info.category_idx;
+Category_name = TrialRecord.User.img_info.condition_nm;
 time_of_holding = (onset_time+offset_time)*length(ID)+1000;
 
-bhv_variable('Current_ID', TrialRecord.User.ImageIdx, 'DatasetName', TrialRecord.User.current_set,'Category_idx',TrialRecord.User.CategoryIdx)
+bhv_variable('Current_ID', TrialRecord.User.ImageIdx, 'DatasetName', TrialRecord.User.img_info.selected_dataset)
 
 %% this script is mainly for open ephys categorical test.
 
@@ -97,7 +97,7 @@ con1.add(pm);
 
 %% Timing System
 dashboard(2, sprintf(['has been played for ' num2str(TrialRecord.User.played_times,3), ' cycles before,']))
-dashboard(3, sprintf(['dataset - ' TrialRecord.User.current_set, '(n=' ,num2str(TrialRecord.User.imageset_size), ')']))
+dashboard(3, sprintf(['dataset - ' TrialRecord.User.img_info.selected_dataset, '(n=' ,num2str(TrialRecord.User.imageset_size), ')']))
 dashboard(4, sprintf(['onset = ' num2str(imglist{1,3}), ', offset = ' num2str(imglist{2,3})]))
 %% create scene
 scene = create_scene(con1);
