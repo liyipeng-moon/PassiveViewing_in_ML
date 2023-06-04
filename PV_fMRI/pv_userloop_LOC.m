@@ -4,7 +4,7 @@ persistent timing_filename_returned ID; global   DeviceFreeMode;
 C=[];
 
 localizer_folder = pwd;
-cd ..\..\..\
+cd ..\
 addpath(genpath(pwd))
 cd(localizer_folder)
 timingfile = 'localizer.m';

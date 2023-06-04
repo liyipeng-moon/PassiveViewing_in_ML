@@ -18,7 +18,7 @@ imginfo_valut='D:\Img_vault';
 TrialRecord.User.image_train = 200;
 DeviceFreeMode = 1;
 room_number = 305;
-
+Localizer_set=0;
 %% Connecting to AO...
 if (0==TrialRecord.CurrentTrialNumber)
     if(~DeviceFreeMode)
@@ -41,7 +41,7 @@ switch_token=0;
 %% initialize datasets
 if (0==TrialRecord.CurrentTrialNumber) % the first trial
     % select data
-    [TrialRecord.User.img_info]=select_dataset(imginfo_valut);
+    [TrialRecord.User.img_info]=select_dataset(imginfo_valut,Localizer_set);
     dataset_memory=TrialRecord.Editable.switch_token;
     ID = [];
     for m=1:length(TrialRecord.User.img_info.img_path)
@@ -62,7 +62,7 @@ end
 
     if(TrialRecord.Editable.switch_token~=dataset_memory) % if we want to change dataset
         dataset_memory = TrialRecord.Editable.switch_token;
-        [TrialRecord.User.img_info]=select_dataset(imginfo_valut);
+        [TrialRecord.User.img_info]=select_dataset(imginfo_valut,Localizer_set);
         dataset_memory=TrialRecord.Editable.switch_token;
         ID = [];
         for m=1:length(TrialRecord.User.img_info.img_path)

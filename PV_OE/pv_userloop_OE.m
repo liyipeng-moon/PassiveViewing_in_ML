@@ -19,6 +19,7 @@ OE_IP = Local_OE_IP;
 imginfo_valut='C:\Users\PC\Desktop\Img_vault';
 TrialRecord.User.image_train = 200;
 DeviceFreeMode=0;
+Localizer_set=0;
 
 %% Connecting to OE
 if(~DeviceFreeMode)
@@ -36,7 +37,7 @@ end
 switch_token=0;
 if (0==TrialRecord.CurrentTrialNumber) % the first trial
     % select data
-    [TrialRecord.User.img_info]=select_dataset(imginfo_valut);
+    [TrialRecord.User.img_info]=select_dataset(imginfo_valut,Localizer_set);
     
     if(~DeviceFreeMode) Send_condition_to_OE(TrialRecord.User, OE_config);end
     dataset_memory=TrialRecord.Editable.switch_token;
@@ -59,7 +60,7 @@ if (0==TrialRecord.CurrentTrialNumber) % the first trial
 else % if this is not the first trial
     if(TrialRecord.Editable.switch_token~=dataset_memory) % if we want to change dataset
         dataset_memory = TrialRecord.Editable.switch_token;
-        [TrialRecord.User.img_info]=select_dataset(imginfo_valut);
+        [TrialRecord.User.img_info]=select_dataset(imginfo_valut,Localizer_set);
         if(~DeviceFreeMode) Send_condition_to_OE(TrialRecord.User, OE_config); end
         dataset_memory=TrialRecord.Editable.switch_token;
         ID = [];
