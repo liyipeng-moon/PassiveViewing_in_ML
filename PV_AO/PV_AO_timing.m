@@ -18,7 +18,7 @@ switch_token = 1;
 electrode_token  = 1;
 fix_dot_size = 0.2;
 ID = TrialRecord.User.imageIDs;
-bhv_variable('Current_ID', TrialRecord.User.ImageIdx, 'DatasetName', TrialRecord.User.current_set)
+bhv_variable('DatasetName', TrialRecord.User.img_info.selected_dataset)
 
 %% image system
 
@@ -81,7 +81,7 @@ con.add(pm2);
 con.add(oom)
 
 %% Timing System
-dashboard(6, sprintf(['dataset - ' TrialRecord.User.current_set(1:end-4), '(n=' ,num2str(TrialRecord.User.imageset_size), ')']))
+dashboard(6, sprintf(['dataset - ' TrialRecord.User.img_info.selected_dataset(1:end-4), '(n=' ,num2str(TrialRecord.User.imageset_size), ')']))
 dashboard(3, sprintf(['has been played for ' num2str(TrialRecord.User.played_times,3), ' cycles before,']))
 dashboard(5, sprintf(['onset = ' num2str(imglist{1,3}), ', offset = ' num2str(imglist{2,3})]))
 counter_num = floor((10*TrialRecord.User.image_train)/(TrialRecord.User.imageset_size));
@@ -108,8 +108,9 @@ tc.Duration = 30;
 scene = create_scene(con);
 pre_scene = create_scene(tc);
 %% run scene
+
 for ii = 1:3
-    run_scene(pre_scene, 100+TrialRecord.User.current_idx);
+    run_scene(pre_scene, 100+TrialRecord.User.img_info.dataset_idx);
 end
 if(~fix1.Success)
     %BFB
