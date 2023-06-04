@@ -1,9 +1,13 @@
-function [img_info] = select_dataset(root_dir)
+function [img_info] = select_dataset(root_dir, Localizer_set)
 
 ending_flag = 1;
 while(ending_flag)
-
+    
+    if(isempty(Localizer_set))
      [filename, ~, ~] = uigetfile([root_dir, '\datasets\*png']);
+    else
+        filename = [Localizer_set, '.png'];
+    end
      example_img = imread([root_dir, '\datasets\', filename]);
      if(strcmpi(filename, 'Noise.png'))
         break
