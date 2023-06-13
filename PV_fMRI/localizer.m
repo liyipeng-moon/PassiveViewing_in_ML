@@ -13,7 +13,7 @@ reward_duration = 100; % in miliseconds, but you need to verify this by testing 
 fixation_window = 1; % in degree, how large your fixation window is.
 max_break_time = 300; % how long you can accept for fixation break, in miliseconds.
 fix_dot_size = 0.2;
-
+Totaltime = TrialRecord.User.Totaltime;
 %% image system
 
 img = ImageChanger(null_);

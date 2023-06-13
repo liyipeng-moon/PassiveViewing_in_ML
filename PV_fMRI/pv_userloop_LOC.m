@@ -15,7 +15,7 @@ if isempty(timing_filename_returned)
 end
 
 %% parameters which should not change if we fix it
-imginfo_valut='C:\Users\PC\Desktop\Img_vault';
+imginfo_valut='./Img_vault';
 DeviceFreeMode=1;
 
 %% Data
@@ -37,19 +37,22 @@ C = {'fix(0,0)'};
 % example_design
 DM = [];
 category_order = randperm(6)-1;
+block_size = 32;
 for cc = 1:length(category_order)
-    DM = [DM,randperm(4)+16*category_order(cc)];
+    DM = [DM,randperm(16)+16*category_order(cc),randperm(16)+16*category_order(cc)];
 end
-plot(DM)
+plot(DM);title('Block')
 DisplayOnset = ones(size(DM))*500;
 DisplayOffset = ones(size(DM))*500;
 for cc = 1:length(category_order)
-    ibi = cc*4;
-    DisplayOffset(ibi) = DisplayOffset(ibi) + randi(3)*1000;
+    ibi = cc*block_size;
+    DisplayOffset(ibi) = DisplayOffset(ibi) + 4000;
 end
 
 total_time = 0;
-imglist = cell(0,3);
+% leadin
+imglist = cell(1,3);imglist(1,1)={[]};imglist(1,2)={[]};imglist(1,3)={6000}; 
+total_time = total_time+ imglist{end,3};
 
 for img_trial_idx = 1:length(DM)
         imglist(end+1,1)={ID(DM(img_trial_idx))};
@@ -59,7 +62,9 @@ for img_trial_idx = 1:length(DM)
         imglist(end,2)={[]};
         imglist(end,3)={DisplayOffset(img_trial_idx)}; total_time = total_time+ imglist{end,3};
 end
-
+% lead out
+imglist(end+1,1)={[]};imglist(end,2)={[]};imglist(end,3)={6000}; 
+total_time = total_time+ imglist{end,3};
 TrialRecord.User.imglist = imglist;
 TrialRecord.User.Totaltime = total_time;
 % example img
