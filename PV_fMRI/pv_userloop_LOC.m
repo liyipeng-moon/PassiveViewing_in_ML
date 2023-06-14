@@ -44,10 +44,11 @@ for cc = randperm(6)
     DM = [DM,img_now(randperm(16,block_size/2)),img_now(randperm(16,block_size/2))];
     ibi_idx = [ibi_idx, length(DM)];
 end
-plot(DM);title('Block')
+%
 DisplayOnset = ones(size(DM))*500;
 DisplayOffset = ones(size(DM))*500;
 DisplayOffset(ibi_idx) = DisplayOffset(ibi_idx) + ones([1,length(ibi_idx)])*2000;
+
 save('Test.mat', "DM")
 total_time = leadin_time + leadout_time + sum(DisplayOnset) + sum(DisplayOffset);
 % leadin
