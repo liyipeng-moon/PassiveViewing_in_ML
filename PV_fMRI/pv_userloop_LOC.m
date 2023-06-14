@@ -1,5 +1,5 @@
 function [C,timingfile,userdefined_trialholder] = pv_userloop_LOC(MLConfig,TrialRecord)
-persistent timing_filename_returned ID; global   DeviceFreeMode;
+persistent timing_filename_returned ID;
 
 C=[];
 
@@ -16,7 +16,6 @@ end
 
 %% parameters which should not change if we fix it
 imginfo_valut='./Img_vault';
-DeviceFreeMode=1;
 
 %% Data
 Localizer_set = 'FOB';
@@ -35,36 +34,36 @@ C = {'fix(0,0)'};
 
 %% Generating Design
 % example_design
+
+leadin_time = 6000; leadout_time = 6000;
 DM = [];
 category_order = randperm(6)-1;
-block_size = 32;
-for cc = 1:length(category_order)
-    DM = [DM,randperm(16)+16*category_order(cc),randperm(16)+16*category_order(cc)];
+block_size = 16; ibi_idx = [];
+for cc = randperm(6)
+    img_now = find(TrialRecord.User.img_info.category_idx==cc);
+    DM = [DM,img_now(randperm(16,block_size/2)),img_now(randperm(16,block_size/2))];
+    ibi_idx = [ibi_idx, length(DM)];
 end
 plot(DM);title('Block')
 DisplayOnset = ones(size(DM))*500;
 DisplayOffset = ones(size(DM))*500;
-for cc = 1:length(category_order)
-    ibi = cc*block_size;
-    DisplayOffset(ibi) = DisplayOffset(ibi) + 4000;
-end
-
-total_time = 0;
+DisplayOffset(ibi_idx) = DisplayOffset(ibi_idx) + ones([1,length(ibi_idx)])*2000;
+save('Test.mat', "DM")
+total_time = leadin_time + leadout_time + sum(DisplayOnset) + sum(DisplayOffset);
 % leadin
-imglist = cell(1,3);imglist(1,1)={[]};imglist(1,2)={[]};imglist(1,3)={6000}; 
+imglist = cell(1,3);imglist(1,1)={[]};imglist(1,2)={[]};imglist(1,3)={leadin_time}; 
 total_time = total_time+ imglist{end,3};
 
 for img_trial_idx = 1:length(DM)
         imglist(end+1,1)={ID(DM(img_trial_idx))};
         imglist(end,2)={[0,0]};
-        imglist(end,3)={DisplayOnset(img_trial_idx)}; total_time = total_time+ imglist{end,3};
+        imglist(end,3)={DisplayOnset(img_trial_idx)};
         imglist(end+1,1)={[]};
         imglist(end,2)={[]};
-        imglist(end,3)={DisplayOffset(img_trial_idx)}; total_time = total_time+ imglist{end,3};
+        imglist(end,3)={DisplayOffset(img_trial_idx)};
 end
 % lead out
-imglist(end+1,1)={[]};imglist(end,2)={[]};imglist(end,3)={6000}; 
-total_time = total_time+ imglist{end,3};
+imglist(end+1,1)={[]};imglist(end,2)={[]};imglist(end,3)={leadout_time}; 
 TrialRecord.User.imglist = imglist;
 TrialRecord.User.Totaltime = total_time;
 % example img

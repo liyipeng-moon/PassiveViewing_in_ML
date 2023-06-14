@@ -45,25 +45,31 @@ pm.Dashboard = 1;
 pm2 = PropertyMonitor(rlh);  % display the state of rwd on the screen
 pm2.Dashboard = 2;
 
+fta = FixTimeAnalyzer(fix1);
+
 con = Concurrent(img);
 con.add(rwd);
 con.add(crc);
 con.add(pm);
 con.add(pm2);
-
+con.add(fta)
 kc = KeyChecker(mouse_);
 kc.KeyNum = 1;  % 1st keycode
 %% create scene
+
 scene = create_scene(con);
 keyscene = create_scene(kc);
 %% run scene
 run_scene(keyscene,9); % wait trigger
 cc = clock;
 bhv_variable('TriggerTime', cc);
+tic
 run_scene(scene,11);
 idle(0);
 
-user_text('Finished session');
+user_text(['Finished session in ', num2str(toc), 's']);
+user_text(['Monkey fix for ', num2str((fta.FixTime)./60), 's']);
 user_text(['Next Session Index: ' num2str(TrialRecord.CurrentTrialNumber+1)])
 %user_warning('warn_Finished one session');
+
 escape_screen()
