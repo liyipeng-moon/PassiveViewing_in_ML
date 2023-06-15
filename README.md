@@ -3,6 +3,7 @@ apply passive viewing paradigm in monkey logic
 
 install NIMH Monkey Logic at https://monkeylogic.nimh.nih.gov/
 
+If you are using AO, install instrument controll toolbox and jsonlab before running
 modify your image vault in pv_userloop, load condition file in main menu and run!
 if you don't have a AO or OE connected to ML PC through a network switcher, please set DeviceFreeMode=1 in userloop function\
 
