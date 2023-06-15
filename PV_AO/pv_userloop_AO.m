@@ -16,16 +16,20 @@ end
 
 imginfo_valut='D:\Img_vault';
 TrialRecord.User.image_train = 200;
-DeviceFreeMode = 1;
 room_number = 305;
-Localizer_set=0;
-%% Connecting to AO...
+online_ip = '10.129.168.158';
+url = ['http://', online_ip,':8000/receive'];
+
+
+DeviceFreeMode = 1;
+OnlineMode = 1;
+%% initialize
 if (0==TrialRecord.CurrentTrialNumber)
+    % Connecting to AO...
     if(~DeviceFreeMode)
         Connected = fN_ao_connect(room_number);
         if(Connected==1 || Connected==10)
             disp('Connected to AO, sending experiment setup...')
-            
             AO_SetSaveFileName([MLConfig.FormattedName '_' MLConfig.Investigator])
             AO_StartSave;
             pause(0.5)
@@ -34,6 +38,11 @@ if (0==TrialRecord.CurrentTrialNumber)
             warning('AO is connected to ML, Use Device Free Mode?')
         end
     end
+    % Connecting to Online
+    if(OnlineMode)
+        if(exist('ML_TCP','var') && isa(ML_TCP,'tcpclient'));delete(ML_TCP);end
+        ML_TCP = tcpclient(online_ip, 1234);
+    end
 end
 
 switch_token=0;
@@ -41,7 +50,8 @@ switch_token=0;
 %% initialize datasets
 if (0==TrialRecord.CurrentTrialNumber) % the first trial
     % select data
-    [TrialRecord.User.img_info]=select_dataset(imginfo_valut,Localizer_set);
+    [TrialRecord.User.img_info]=select_dataset(imginfo_valut,0);
+    
     dataset_memory=TrialRecord.Editable.switch_token;
     ID = [];
     for m=1:length(TrialRecord.User.img_info.img_path)
@@ -106,4 +116,14 @@ if(~DeviceFreeMode)
     AO_SendTextEvent(['StartTR' num2str(TrialRecord.CurrentTrialNumber)])
     AO_SendTextEvent(TrialRecord.User.img_info.selected_dataset)
 end
+
+if(OnlineMode)
+    try
+        write(ML_TCP,uint8(savejson('',TrialRecord.User.img_info)))
+    catch
+        ML_TCP = tcpclient(online_ip, 1234);
+        write(ML_TCP,uint8(savejson('',TrialRecord.User.img_info))); 
+    end
+end
+
 end
