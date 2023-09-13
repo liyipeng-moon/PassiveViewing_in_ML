@@ -1,0 +1,6 @@
+Condition	Frequency	Block	Timing File	TaskObject#1	TaskObject#2	TaskObject#3	TaskObject#4	
+1		1		1	reward_test	fix(0,0)	mov(./m1.mp4, 0,0)
+2		1		1	reward_test	fix(0,0)	mov(./2.mp4, 0,0)
+3		1		1	reward_test	fix(0,0)	mov(./3.mp4, 0,0)
+4		1		1	reward_test	fix(0,0)	mov(./4.mp4, 0,0)
+5		1		1	reward_test	fix(0,0)	mov(./5.mp4, 0,0)

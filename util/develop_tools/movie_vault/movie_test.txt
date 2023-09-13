@@ -1,2 +1,0 @@
-Condition	Frequency	Block	Timing File	TaskObject#1	TaskObject#2	TaskObject#3	TaskObject#4	
-1		1		1	movie_test	fix(0,0)
