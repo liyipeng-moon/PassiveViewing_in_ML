@@ -17,16 +17,7 @@ reward_duration = 100; % in miliseconds, but you need to verify this by testing 
 max_break_time = 300; % how long you can accept for fixation break, in miliseconds.
 
 
-% movie time + leadinout + 1s
-if(TrialRecord.CurrentCondition==3)
-    movie_duration = 605;
-elseif(TrialRecord.CurrentCondition==1)
-    movie_duration = 485;
-else
-    movie_duration = 522;
-end
-
-total_time = movie_duration;
+total_time = 100;
 user_text(num2str(total_time))
 %% Pre-fixation scene - scene1
 
@@ -67,8 +58,7 @@ cc.add(pm);
 cc.add(pm2);
 % cc.add(stim);
 
-% in guojiahui dataset, 16.27*9.17d
-rescale_object([2], 2);
+
 scene2 = create_scene(cc, [1]);
 
 % restore_light

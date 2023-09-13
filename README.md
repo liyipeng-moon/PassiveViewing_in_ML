@@ -8,6 +8,12 @@ modify your image vault in pv_userloop, load condition file in main menu and run
 if you don't have a AO or OE connected to ML PC through a network switcher, please set DeviceFreeMode=1 in userloop function\
 
 # Update Journal
+20230913\
+add training paradigm
+add example data
+add movie viewing dataset
+add single phonton paradigm
+
 20230604\
 add fmri localizer dataset
 add trigger val and example design matrix

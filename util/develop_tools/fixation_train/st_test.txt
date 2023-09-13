@@ -1,4 +1,2 @@
 Condition	Frequency	Block	Timing File	TaskObject#1	TaskObject#2
-1		1		1	movie_test	fix(0,0)	mov(./3.mp4, 0,0)
-2		1		1	movie_test	fix(0,0)	mov(./4.mp4, 0,0)
-3		1		1	movie_test	fix(0,0)	mov(./5.mp4, 0,0)
+1		1		1	movie_test	fix(0,0)
