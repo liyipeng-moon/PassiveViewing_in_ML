@@ -8,6 +8,9 @@ modify your image vault in pv_userloop, load condition file in main menu and run
 if you don't have a AO or OE connected to ML PC through a network switcher, please set DeviceFreeMode=1 in userloop function\
 
 # Update Journal
+20230918\
+refine training paradigm
+
 20230913\
 add training paradigm
 add example data
