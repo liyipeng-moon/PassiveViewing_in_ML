@@ -1,5 +1,5 @@
-function [C,timingfile,userdefined_trialholder] = pv_userloop(MLConfig,TrialRecord)
-persistent timing_filename_returned ID dataset_memory; 
+function [C,timingfile,userdefined_trialholder] = pv_userloop_AO(MLConfig,TrialRecord)
+persistent timing_filename_returned ID
 
 C=[];
 cd ..\
@@ -14,49 +14,42 @@ end
 
 %% parameters which should not change if we fix it
 
-imginfo_valut='D:\Img_vault';
-TrialRecord.User.image_train = 200;
-room_number = 305;
-online_ip = '10.129.168.158';
-url = ['http://', online_ip,':8000/receive'];
+root_dirs = {'Z:\Monkey\Stimuli', 'D:\Img_vault'};
+
+TrialRecord.User.image_train = 500;
+online_folder = 'C:\Users\user\Desktop\BAM_Communicate';
 
 
-DeviceFreeMode = 1;
-OnlineMode = 1;
-%% initialize
-if (0==TrialRecord.CurrentTrialNumber)
-    % Connecting to AO...
-    if(~DeviceFreeMode)
-        Connected = fN_ao_connect(room_number);
-        if(Connected==1 || Connected==10)
-            disp('Connected to AO, sending experiment setup...')
-            AO_SetSaveFileName([MLConfig.FormattedName '_' MLConfig.Investigator])
-            AO_StartSave;
-            pause(0.5)
-            AO_SendTextEvent(['ML Connected']);
-        else
-            warning('AO is connected to ML, Use Device Free Mode?')
-        end
-    end
-    % Connecting to Online
-    if(OnlineMode)
-        if(exist('ML_TCP','var') && isa(ML_TCP,'tcpclient'));delete(ML_TCP);end
-        ML_TCP = tcpclient(online_ip, 1234);
-    end
-end
-
-switch_token=0;
+room_number = 302;
+DeviceFreeMode = 0;
+% initialize
+% if (0==TrialRecord.CurrentTrialNumber)
+%     % Connecting to AO...
+%     if(~DeviceFreeMode)
+%         Connected = fN_ao_connect(room_number);
+%         if(Connected==1 || Connected==10)
+%             disp('Connected to AO, sending experiment setup...')
+%             AO_SetSaveFileName([MLConfig.FormattedName '_' MLConfig.Investigator])
+%             pause(0.1)
+%             AO_StartSave;
+%             pause(1)
+%             AO_SendTextEvent('ML Connected');
+%         else
+%             warning('AO is connected to ML?, Use Device Free Mode?')
+%         end
+%     end
+% end
 
 %% initialize datasets
+img_size = floor(TrialRecord.Editable.img_degree*MLConfig.Screen.PixelsPerDegree);
 if (0==TrialRecord.CurrentTrialNumber) % the first trial
     % select data
-    [TrialRecord.User.img_info]=select_dataset(imginfo_valut,0);
-    
-    dataset_memory=TrialRecord.Editable.switch_token;
+    TrialRecord.User.switch_token=0;
+    [TrialRecord.User.img_info]=select_xml(root_dirs,online_folder);
     ID = [];
     for m=1:length(TrialRecord.User.img_info.img_path)
         temp_img = mglimread(TrialRecord.User.img_info.img_path{m});
-        temp_img = mglimresize(temp_img,[TrialRecord.User.img_info.default_params.img_size,TrialRecord.User.img_info.default_params.img_size]);
+        temp_img = mglimresize(temp_img,[img_size,img_size]);
         ID(m) = mgladdbitmap(temp_img);  % mgladdbitmap returns an MGL object ID that is a double scalar.
     end
     mglsetproperty(ID,'active',false);  % Turn off all images.
@@ -70,14 +63,12 @@ if (0==TrialRecord.CurrentTrialNumber) % the first trial
     end
 end
 
-    if(TrialRecord.Editable.switch_token~=dataset_memory) % if we want to change dataset
-        dataset_memory = TrialRecord.Editable.switch_token;
-        [TrialRecord.User.img_info]=select_dataset(imginfo_valut,Localizer_set);
-        dataset_memory=TrialRecord.Editable.switch_token;
+    if(TrialRecord.User.switch_token) % if we want to change dataset
+        [TrialRecord.User.img_info]=select_xml(root_dirs,online_folder);
         ID = [];
         for m=1:length(TrialRecord.User.img_info.img_path)
             temp_img = mglimread(TrialRecord.User.img_info.img_path{m});
-            temp_img = mglimresize(temp_img,[TrialRecord.User.img_info.default_params.img_size,TrialRecord.User.img_info.default_params.img_size]);
+            temp_img = mglimresize(temp_img,[img_size,img_size]);
             ID(m) = mgladdbitmap(temp_img);  % mgladdbitmap returns an MGL object ID that is a double scalar.
         end
         mglsetproperty(ID,'active',false);  % Turn off all images.
@@ -89,18 +80,46 @@ end
         for ww = 1:1000
             TrialRecord.User.Trial_Loader=[TrialRecord.User.Trial_Loader, randperm(TrialRecord.User.imageset_size)];
         end
-
+        TrialRecord.User.switch_token=0;
     else 
         % if we don't change dataset, just update the presentation progress
         % check how long last trial lasts
         % only do this when we don't switch dataset.
         if(TrialRecord.CurrentTrialNumber>0)
-            last_ev_code = TrialRecord.LastTrialCodes.CodeTimes(end);
-            first_ev_code = 0;
-            if(~isempty(first_ev_code))
-                TrialRecord.User.played_images = TrialRecord.User.played_images+ (last_ev_code-first_ev_code) / (TrialRecord.Editable.onset_time+TrialRecord.Editable.offset_time);
-                TrialRecord.User.played_times =  TrialRecord.User.played_images/TrialRecord.User.imageset_size;
+            tic
+            codenumbers = TrialRecord.LastTrialCodes.CodeNumbers;
+            onset_location = find(codenumbers>10000&codenumbers<20000);
+
+            % resample code time and eye signal to 100Hz
+            eye_dist = sqrt(TrialRecord.LastTrialAnalogData.Eye(:,1).^2+TrialRecord.LastTrialAnalogData.Eye(:,2).^2);
+            eye_dist = resample(eye_dist,100,MLConfig.AISampleRate);
+            eye_in = eye_dist<TrialRecord.Editable.fixation_window;
+            codetimes = floor(TrialRecord.LastTrialCodes.CodeTimes/10);
+            
+            valid_onset_loc = ones([1,length(onset_location)]);
+            img_interval = TrialRecord.Editable.onset_time/10;
+            for onset_img = 1:length(onset_location)
+                t1 = codetimes(onset_location(onset_img));
+                if(onset_img==length(onset_location)) % last img
+                    if(any(codenumbers(onset_location(onset_img):end)>20000))
+                        t2 = t1+img_interval;
+                    else
+                        valid_onset_loc(onset_img)=0;
+                        continue
+                    end
+                else
+                    t2 = t1+img_interval;
+                end
+                if(any(~eye_in(t1:t2)))
+                    valid_onset_loc(onset_img)=0;
+                end
             end
+            toc
+            TrialRecord.User.onset_times = sum(valid_onset_loc);
+            TrialRecord.User.played_images = TrialRecord.User.played_images+ TrialRecord.User.onset_times;
+            TrialRecord.User.played_times =  TrialRecord.User.played_images/TrialRecord.User.imageset_size;
+            TrialRecord.User.Trial_Loader(find(valid_onset_loc))=[];
+            fprintf('last trial img %d, total %d\n', TrialRecord.User.onset_times,TrialRecord.User.played_images);
         end
     end
 
@@ -109,21 +128,11 @@ C = {'fix(0,0)'};
 % randomize their order for the condition of each trial.
 TrialRecord.User.imageIDs = ID;
 TrialRecord.User.ImageIdx = TrialRecord.User.Trial_Loader(1:TrialRecord.User.image_train);
-TrialRecord.User.Trial_Loader(1:TrialRecord.User.image_train)=[];
 imshow(TrialRecord.User.img_info.example_img);title(TrialRecord.User.img_info.category_info,'Interpreter','none')
 
-if(~DeviceFreeMode)
-    AO_SendTextEvent(['StartTR' num2str(TrialRecord.CurrentTrialNumber)])
-    AO_SendTextEvent(TrialRecord.User.img_info.selected_dataset)
-end
-
-if(OnlineMode)
-    try
-        write(ML_TCP,uint8(savejson('',TrialRecord.User.img_info)))
-    catch
-        ML_TCP = tcpclient(online_ip, 1234);
-        write(ML_TCP,uint8(savejson('',TrialRecord.User.img_info))); 
-    end
-end
+% if(~DeviceFreeMode)
+%     AO_SendTextEvent(['StartTR' num2str(TrialRecord.CurrentTrialNumber)])
+%     AO_SendTextEvent(TrialRecord.User.img_info.selected_dataset)
+% end
 
 end

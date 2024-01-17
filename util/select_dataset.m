@@ -1,8 +1,7 @@
-function [img_info] = select_dataset(root_dir, Localizer_set)
+function [img_info] = select_dataset(root_dir, Localizer_set, BAM_folder)
 
 ending_flag = 1;
 while(ending_flag)
-    
     if(~Localizer_set)
         [filename, ~, ~] = uigetfile([root_dir, '\datasets\*png']);
     else
@@ -49,6 +48,7 @@ for ii = 1:length(temp)
 end
 selected_dataset=filename;
 category_idx = load([root_dir '\matfile_pool\'  filename]).category.idx;
+category_color = load([root_dir '\matfile_pool\'  filename]).category.color_category;
 category_nm = load([root_dir '\matfile_pool\'  filename]).category.name;
 
 category_info = [];
@@ -64,5 +64,7 @@ img_info.default_params = default_params;
 img_info.category_info = category_info;
 img_info.example_img = example_img;
 img_info.condition_nm = category_nm;
+img_info.category_color = category_color;
 
+save([BAM_folder,'\DM.mat'], "img_info")
 end
